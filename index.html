@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spanish Word of the Day</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      padding: 1rem; 
+      background-color: #f9f9f9; 
+      color: #333;
+    }
+    #word {
+      font-size: 1.5em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📖 Spanish Word of the Day</h2>
+  <p id="word">Loading...</p>
+
+  <script>
+    async function getWord() {
+      const words = [
+        "amar = to love",
+        "correr = to run",
+        "soñar = to dream",
+        "perder = to lose",
+        "alcanzar = to reach",
+        "reír = to laugh",
+        "aprender = to learn"
+      ];
+      const date = new Date();
+      const index = (date.getFullYear() * 100 + date.getMonth() * 10 + date.getDate()) % words.length;
+      const word = words[index];
+      document.getElementById("word").textContent = word;
+    }
+
+    getWord();
+  </script>
+</body>
+</html>
