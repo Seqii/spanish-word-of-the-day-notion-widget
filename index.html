@@ -5,23 +5,56 @@
   <title>Spanish Word of the Day</title>
   <style>
     body { 
-      font-family: sans-serif; 
-      padding: 1rem; 
-      background-color: #f9f9f9; 
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      background-color: #191919; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: #eaeaea;
+    }
+    .card {
+      background: #242424;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      text-align: center;
+      max-width: 300px;
+      width: 90%;
+      border: 1px solid #333;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
     }
     #word {
-      font-size: 1.5em;
-      margin-top: 10px;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #f5f5f5;
+      margin-top: 0.5rem;
+    }
+    .emoji {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
     }
   </style>
 </head>
 <body>
-  <h2>📖 Spanish Word of the Day</h2>
-  <p id="word">Loading...</p>
+  <div class="card">
+    <div class="emoji">📖</div>
+    <h2>Spanish Word of the Day</h2>
+    <p id="word">Loading...</p>
+  </div>
 
   <script>
-    async function getWord() {
+    function seededRandom(seed) {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
+
+    function getDailyWord() {
       const words = [
         "amar = to love",
         "correr = to run",
@@ -29,15 +62,25 @@
         "perder = to lose",
         "alcanzar = to reach",
         "reír = to laugh",
-        "aprender = to learn"
+        "aprender = to learn",
+        "viajar = to travel",
+        "construir = to build",
+        "descubrir = to discover",
+        "escoger = to choose",
+        "lograr = to achieve",
+        "enseñar = to teach",
+        "buscar = to search",
+        "compartir = to share"
       ];
-      const date = new Date();
-      const index = (date.getFullYear() * 100 + date.getMonth() * 10 + date.getDate()) % words.length;
-      const word = words[index];
-      document.getElementById("word").textContent = word;
+
+      const today = new Date();
+      const seed = today.getFullYear() * 10000 + (today.getMonth()+1) * 100 + today.getDate();
+      const index = Math.floor(seededRandom(seed) * words.length);
+      return words[index];
     }
 
-    getWord();
+    document.getElementById("word").textContent = getDailyWord();
   </script>
 </body>
 </html>
+
