@@ -4,98 +4,81 @@
   <meta charset="UTF-8" />
   <title>Spanish Word of the Day</title>
   <style>
-    :root {
-      --bg-light: #f9f9f9;
-      --bg-dark: #2f3437;
-      --text-light: #333;
-      --text-dark: #f3f3f3;
-      --accent: #ffb347; /* warm orange highlight */
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Roboto, sans-serif;
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      background-color: #191919; 
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-      background-color: var(--bg-light);
-      color: var(--text-light);
-      transition: background-color 0.3s ease, color 0.3s ease;
+      margin: 0;
+      color: #eaeaea;
     }
-
-    /* Match Notion dark mode automatically */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: var(--bg-dark);
-        color: var(--text-dark);
-      }
-    }
-
     .card {
-      background-color: rgba(255, 255, 255, 0.85);
-      padding: 2rem;
-      border-radius: 1rem;
+      background: #242424;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
       text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s ease, color 0.3s ease;
+      max-width: 300px;
+      width: 90%;
+      border: 1px solid #333;
     }
-
-    @media (prefers-color-scheme: dark) {
-      .card {
-        background-color: rgba(47, 52, 55, 0.85);
-      }
-    }
-
     h2 {
-      margin: 0 0 1rem;
-      font-size: 1.5rem;
-      color: var(--accent);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
     }
-
     #word {
-      font-size: 2rem;
-      font-weight: bold;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #f5f5f5;
+      margin-top: 0.5rem;
+    }
+    .emoji {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h2>📖 Spanish Word of the Day</h2>
+    <div class="emoji">📖</div>
+    <h2>Spanish Word of the Day</h2>
     <p id="word">Loading...</p>
   </div>
 
   <script>
-    async function getWord() {
+    function seededRandom(seed) {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
+
+    async function getDailyWord() {
       try {
+        // Fetch your translations.json
         const response = await fetch('translations.json');
         const wordsObj = await response.json();
         const spanishWords = Object.keys(wordsObj);
-        const today = new Date().toISOString().split('T')[0];
 
-        const savedData = JSON.parse(localStorage.getItem('dailyWord')) || {};
-        let spanish, english;
+        // Create a daily seed based on date
+        const today = new Date();
+        const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
 
-        if (savedData.date === today) {
-          spanish = savedData.spanish;
-          english = savedData.english;
-        } else {
-          const index = Math.floor(Math.random() * spanishWords.length);
-          spanish = spanishWords[index];
-          english = wordsObj[spanish];
-          localStorage.setItem('dailyWord', JSON.stringify({
-            date: today, spanish, english
-          }));
-        }
+        // Pick a random word for today (consistent all day)
+        const index = Math.floor(seededRandom(seed) * spanishWords.length);
+        const spanish = spanishWords[index];
+        const english = wordsObj[spanish];
 
+        // Display word
         document.getElementById("word").textContent = `${spanish} = ${english}`;
       } catch (error) {
-        document.getElementById("word").textContent = "Error loading word list.";
+        document.getElementById("word").textContent = "Error loading word.";
         console.error(error);
       }
     }
-    getWord();
+
+    getDailyWord();
   </script>
 </body>
 </html>
