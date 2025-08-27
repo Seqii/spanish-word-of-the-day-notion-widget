@@ -4,65 +4,97 @@
   <meta charset="UTF-8" />
   <title>Spanish Word of the Day</title>
   <style>
-    body { 
-      font-family: sans-serif; 
-      padding: 1rem; 
-      background-color: #f9f9f9; 
-      color: #333;
+    :root {
+      --bg-light: #f9f9f9;
+      --bg-dark: #2f3437;
+      --text-light: #333;
+      --text-dark: #f3f3f3;
+      --accent: #ffb347; /* warm orange highlight */
     }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Match Notion dark mode automatically */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+      }
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 2rem;
+      border-radius: 1rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .card {
+        background-color: rgba(47, 52, 55, 0.85);
+      }
+    }
+
+    h2 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
     #word {
-      font-size: 1.5em;
-      margin-top: 10px;
+      font-size: 2rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>📖 Spanish Word of the Day</h2>
-  <p id="word">Loading...</p>
+  <div class="card">
+    <h2>📖 Spanish Word of the Day</h2>
+    <p id="word">Loading...</p>
+  </div>
 
   <script>
     async function getWord() {
       try {
-        // Fetch JSON file
         const response = await fetch('translations.json');
         const wordsObj = await response.json();
-
-        // Convert keys to array
         const spanishWords = Object.keys(wordsObj);
-
-        // Get today's date (YYYY-MM-DD)
         const today = new Date().toISOString().split('T')[0];
 
-        // Check localStorage
         const savedData = JSON.parse(localStorage.getItem('dailyWord')) || {};
         let spanish, english;
 
         if (savedData.date === today) {
-          // Use saved word
           spanish = savedData.spanish;
           english = savedData.english;
         } else {
-          // Pick new random word
           const index = Math.floor(Math.random() * spanishWords.length);
           spanish = spanishWords[index];
           english = wordsObj[spanish];
-
-          // Save for today
           localStorage.setItem('dailyWord', JSON.stringify({
-            date: today,
-            spanish: spanish,
-            english: english
+            date: today, spanish, english
           }));
         }
 
-        // Display
         document.getElementById("word").textContent = `${spanish} = ${english}`;
       } catch (error) {
         document.getElementById("word").textContent = "Error loading word list.";
         console.error(error);
       }
     }
-
     getWord();
   </script>
 </body>
