@@ -27,14 +27,33 @@
         const response = await fetch('translations.json');
         const wordsObj = await response.json();
 
-        // Convert object keys to an array
+        // Convert keys to array
         const spanishWords = Object.keys(wordsObj);
 
-        // Pick a word based on today's date
-        const today = new Date();
-        const index = (today.getFullYear() * 100 + today.getMonth() * 10 + today.getDate()) % spanishWords.length;
-        const spanish = spanishWords[index];
-        const english = wordsObj[spanish];
+        // Get today's date (YYYY-MM-DD)
+        const today = new Date().toISOString().split('T')[0];
+
+        // Check localStorage
+        const savedData = JSON.parse(localStorage.getItem('dailyWord')) || {};
+        let spanish, english;
+
+        if (savedData.date === today) {
+          // Use saved word
+          spanish = savedData.spanish;
+          english = savedData.english;
+        } else {
+          // Pick new random word
+          const index = Math.floor(Math.random() * spanishWords.length);
+          spanish = spanishWords[index];
+          english = wordsObj[spanish];
+
+          // Save for today
+          localStorage.setItem('dailyWord', JSON.stringify({
+            date: today,
+            spanish: spanish,
+            english: english
+          }));
+        }
 
         // Display
         document.getElementById("word").textContent = `${spanish} = ${english}`;
